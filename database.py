@@ -4,16 +4,17 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 class WeatherDatabase:
     def __init__(self):
         # Load environment variables
-        self.host = os.getenv('DB_HOST')
-        self.user = os.getenv('DB_USER')
-        self.password = os.getenv('DB_PASSWORD')
-        self.database = os.getenv('DB_NAME')
-        self.port = int(os.getenv('DB_PORT', '3306'))
+        self.host = os.getenv("DB_HOST")
+        self.user = os.getenv("DB_USER")
+        self.password = os.getenv("DB_PASSWORD")
+        self.database = os.getenv("DB_NAME")
+        self.port = int(os.getenv("DB_PORT", "3306"))
         self.connection = None
-        
+
         # Validate required environment variables
         if not all([self.host, self.user, self.password, self.database]):
             raise ValueError("Missing required database environment variables")
@@ -32,7 +33,7 @@ class WeatherDatabase:
                 connect_timeout=timeout,
                 read_timeout=timeout,
                 write_timeout=timeout,
-                cursorclass=pymysql.cursors.DictCursor
+                cursorclass=pymysql.cursors.DictCursor,
             )
             print("✅ Database connection successful!")
             return True
@@ -45,9 +46,11 @@ class WeatherDatabase:
 
     def create_tables(self):
         """Create necessary tables"""
+        if not self.connection:
+            return
         try:
             cursor = self.connection.cursor()
-            
+
             # Create weather_data table
             create_table_query = """
             CREATE TABLE IF NOT EXISTS weather_data (
@@ -60,20 +63,20 @@ class WeatherDatabase:
                 pressure DECIMAL(7,2),
                 description VARCHAR(255),
                 wind_speed DECIMAL(5,2),
-                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-                INDEX idx_city (city),
-                INDEX idx_timestamp (timestamp)
+                INDEX idx_city (city)
             )
             """
             cursor.execute(create_table_query)
             self.connection.commit()
             print("✅ Tables created successfully")
-            
+
         except pymysql.MySQLError as e:
             print(f"❌ Error creating tables: {e}")
 
     def insert_weather_data(self, weather_data):
         """Insert weather data into database"""
+        if not self.connection:
+            return None
         try:
             cursor = self.connection.cursor()
             insert_query = """
@@ -90,14 +93,16 @@ class WeatherDatabase:
 
     def get_weather_history(self, city, limit=10):
         """Get weather history for a city"""
+        if not self.connection:
+            return []
         try:
             cursor = self.connection.cursor()
             query = """
             SELECT city, temperature, feels_like, humidity, pressure, 
-                   description, wind_speed, timestamp
+                   description, wind_speed
             FROM weather_data 
             WHERE city = %s 
-            ORDER BY timestamp DESC 
+            ORDER BY id DESC 
             LIMIT %s
             """
             cursor.execute(query, (city, limit))
@@ -106,8 +111,23 @@ class WeatherDatabase:
             print(f"❌ Error fetching data: {e}")
             return []
 
+    def get_weather_by_city(self, city):
+        """Get all weather data for a specific city"""
+        if not self.connection:
+            return []
+        try:
+            cursor = self.connection.cursor()
+            query = "SELECT * FROM weather_data WHERE city = %s ORDER BY id DESC"
+            cursor.execute(query, (city,))
+            return cursor.fetchall()
+        except pymysql.MySQLError as e:
+            print(f"❌ Error fetching data for city {city}: {e}")
+            return []
+
     def get_all_cities_with_data(self):
         """Get list of cities that have weather data"""
+        if not self.connection:
+            return []
         try:
             cursor = self.connection.cursor()
             query = """
@@ -120,6 +140,19 @@ class WeatherDatabase:
             return cursor.fetchall()
         except pymysql.MySQLError as e:
             print(f"❌ Error fetching cities: {e}")
+            return []
+
+    def get_all_weather_data(self):
+        """Get all weather data from the database"""
+        if not self.connection:
+            return []
+        try:
+            cursor = self.connection.cursor()
+            query = "SELECT * FROM weather_data ORDER BY id DESC"
+            cursor.execute(query)
+            return cursor.fetchall()
+        except pymysql.MySQLError as e:
+            print(f"❌ Error fetching all weather data: {e}")
             return []
 
     def close(self):

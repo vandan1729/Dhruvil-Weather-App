@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gujarat Weather Report</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        background-color: #f4f4f9;
+        color: #333;
+        margin: 0;
+        padding: 20px;
+      }
+      h1,
+      h2 {
+        text-align: center;
+        color: #4a4a4a;
+      }
+      .container {
+        max-width: 800px;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      form {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+      input[type="text"] {
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        border-radius: 4px 0 0 4px;
+        width: 300px;
+      }
+      input[type="submit"] {
+        padding: 10px 20px;
+        font-size: 16px;
+        border: 1px solid #007bff;
+        background-color: #007bff;
+        color: white;
+        border-radius: 0 4px 4px 0;
+        cursor: pointer;
+      }
+      input[type="submit"]:hover {
+        background-color: #0056b3;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th,
+      td {
+        padding: 12px;
+        border: 1px solid #ddd;
+        text-align: left;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+      tr:hover {
+        background-color: #f1f1f1;
+      }
+      .no-data {
+        text-align: center;
+        margin-top: 20px;
+        color: #777;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Gujarat Weather Report</h1>
+      <form method="POST">
+        <input
+          type="text"
+          name="city"
+          placeholder="Enter city name..."
+          value="{{ city or '' }}"
+        />
+        <input type="submit" value="Get Weather" />
+      </form>
+
+      {% if weather_data %}
+      <h2>Weather for {{ city }}</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Temperature (°C)</th>
+            <th>Feels Like (°C)</th>
+            <th>Humidity (%)</th>
+            <th>Pressure (hPa)</th>
+            <th>Description</th>
+            <th>Wind Speed (m/s)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for record in weather_data %}
+          <tr>
+            <td>{{ record.temperature }}</td>
+            <td>{{ record.feels_like }}</td>
+            <td>{{ record.humidity }}</td>
+            <td>{{ record.pressure }}</td>
+            <td>{{ record.description }}</td>
+            <td>{{ record.wind_speed }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% elif request.method == 'POST' %}
+      <p class="no-data">No weather data found for "{{ city }}".</p>
+      {% endif %}
+    </div>
+  </body>
+</html>
