@@ -94,6 +94,7 @@
       <table>
         <thead>
           <tr>
+            <th>City Name</th>
             <th>Temperature (°C)</th>
             <th>Feels Like (°C)</th>
             <th>Humidity (%)</th>
@@ -105,6 +106,7 @@
         <tbody>
           {% for record in weather_data %}
           <tr>
+            <td>{{ city }}</td>
             <td>{{ record.temperature }}</td>
             <td>{{ record.feels_like }}</td>
             <td>{{ record.humidity }}</td>

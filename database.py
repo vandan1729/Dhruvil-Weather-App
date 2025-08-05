@@ -44,72 +44,72 @@ class WeatherDatabase:
             print(f"❌ Unexpected error connecting to database: {str(e)}")
             return False
 
-    def create_tables(self):
-        """Create necessary tables"""
-        if not self.connection:
-            return
-        try:
-            cursor = self.connection.cursor()
+    # def create_tables(self):
+    #     """Create necessary tables"""
+    #     if not self.connection:
+    #         return
+    #     try:
+    #         cursor = self.connection.cursor()
 
-            # Create weather_data table
-            create_table_query = """
-            CREATE TABLE IF NOT EXISTS weather_data (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                city VARCHAR(100) NOT NULL,
-                state VARCHAR(50) DEFAULT 'Gujarat',
-                temperature DECIMAL(5,2),
-                feels_like DECIMAL(5,2),
-                humidity INT,
-                pressure DECIMAL(7,2),
-                description VARCHAR(255),
-                wind_speed DECIMAL(5,2),
-                INDEX idx_city (city)
-            )
-            """
-            cursor.execute(create_table_query)
-            self.connection.commit()
-            print("✅ Tables created successfully")
+    #         # Create weather_data table
+    #         create_table_query = """
+    #         CREATE TABLE IF NOT EXISTS weather_data (
+    #             id INT AUTO_INCREMENT PRIMARY KEY,
+    #             city VARCHAR(100) NOT NULL,
+    #             state VARCHAR(50) DEFAULT 'Gujarat',
+    #             temperature DECIMAL(5,2),
+    #             feels_like DECIMAL(5,2),
+    #             humidity INT,
+    #             pressure DECIMAL(7,2),
+    #             description VARCHAR(255),
+    #             wind_speed DECIMAL(5,2),
+    #             INDEX idx_city (city)
+    #         )
+    #         """
+    #         cursor.execute(create_table_query)
+    #         self.connection.commit()
+    #         print("✅ Tables created successfully")
 
-        except pymysql.MySQLError as e:
-            print(f"❌ Error creating tables: {e}")
+    #     except pymysql.MySQLError as e:
+    #         print(f"❌ Error creating tables: {e}")
 
-    def insert_weather_data(self, weather_data):
-        """Insert weather data into database"""
-        if not self.connection:
-            return None
-        try:
-            cursor = self.connection.cursor()
-            insert_query = """
-            INSERT INTO weather_data (city, temperature, feels_like, humidity, 
-                                    pressure, description, wind_speed)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
-            """
-            cursor.execute(insert_query, weather_data)
-            self.connection.commit()
-            return cursor.lastrowid
-        except pymysql.MySQLError as e:
-            print(f"❌ Error inserting data: {e}")
-            return None
+    # def insert_weather_data(self, weather_data):
+    #     """Insert weather data into database"""
+    #     if not self.connection:
+    #         return None
+    #     try:
+    #         cursor = self.connection.cursor()
+    #         insert_query = """
+    #         INSERT INTO weather_data (city, temperature, feels_like, humidity, 
+    #                                 pressure, description, wind_speed)
+    #         VALUES (%s, %s, %s, %s, %s, %s, %s)
+    #         """
+    #         cursor.execute(insert_query, weather_data)
+    #         self.connection.commit()
+    #         return cursor.lastrowid
+    #     except pymysql.MySQLError as e:
+    #         print(f"❌ Error inserting data: {e}")
+    #         return None
 
-    def get_weather_history(self, city, limit=10):
-        """Get weather history for a city"""
-        if not self.connection:
-            return []
-        try:
-            cursor = self.connection.cursor()
-            query = """
-            SELECT city, temperature, feels_like, humidity, pressure, 
-                   description, wind_speed
-            FROM weather_data 
-            WHERE city = %s 
-            ORDER BY id DESC 
-            LIMIT %s
-            """
-            cursor.execute(query, (city, limit))
-            return cursor.fetchall()
-        except pymysql.MySQLError as e:
-            print(f"❌ Error fetching data: {e}")
-            return []
+    # def get_weather_history(self, city, limit=10):
+    #     """Get weather history for a city"""
+    #     if not self.connection:
+    #         return []
+    #     try:
+    #         cursor = self.connection.cursor()
+    #         query = """
+    #         SELECT city, temperature, feels_like, humidity, pressure, 
+    #                description, wind_speed
+    #         FROM weather_data 
+    #         WHERE city = %s 
+    #         ORDER BY id DESC 
+    #         LIMIT %s
+    #         """
+    #         cursor.execute(query, (city, limit))
+    #         return cursor.fetchall()
+    #     except pymysql.MySQLError as e:
+    #         print(f"❌ Error fetching data: {e}")
+    #         return []
 
     def get_weather_by_city(self, city):
         """Get all weather data for a specific city"""
@@ -124,36 +124,36 @@ class WeatherDatabase:
             print(f"❌ Error fetching data for city {city}: {e}")
             return []
 
-    def get_all_cities_with_data(self):
-        """Get list of cities that have weather data"""
-        if not self.connection:
-            return []
-        try:
-            cursor = self.connection.cursor()
-            query = """
-            SELECT DISTINCT city, COUNT(*) as record_count
-            FROM weather_data 
-            GROUP BY city
-            ORDER BY city
-            """
-            cursor.execute(query)
-            return cursor.fetchall()
-        except pymysql.MySQLError as e:
-            print(f"❌ Error fetching cities: {e}")
-            return []
+    # def get_all_cities_with_data(self):
+    #     """Get list of cities that have weather data"""
+    #     if not self.connection:
+    #         return []
+    #     try:
+    #         cursor = self.connection.cursor()
+    #         query = """
+    #         SELECT DISTINCT city, COUNT(*) as record_count
+    #         FROM weather_data 
+    #         GROUP BY city
+    #         ORDER BY city
+    #         """
+    #         cursor.execute(query)
+    #         return cursor.fetchall()
+    #     except pymysql.MySQLError as e:
+    #         print(f"❌ Error fetching cities: {e}")
+    #         return []
 
-    def get_all_weather_data(self):
-        """Get all weather data from the database"""
-        if not self.connection:
-            return []
-        try:
-            cursor = self.connection.cursor()
-            query = "SELECT * FROM weather_data ORDER BY id DESC"
-            cursor.execute(query)
-            return cursor.fetchall()
-        except pymysql.MySQLError as e:
-            print(f"❌ Error fetching all weather data: {e}")
-            return []
+    # def get_all_weather_data(self):
+    #     """Get all weather data from the database"""
+    #     if not self.connection:
+    #         return []
+    #     try:
+    #         cursor = self.connection.cursor()
+    #         query = "SELECT * FROM weather_data ORDER BY id DESC"
+    #         cursor.execute(query)
+    #         return cursor.fetchall()
+    #     except pymysql.MySQLError as e:
+    #         print(f"❌ Error fetching all weather data: {e}")
+    #         return []
 
     def close(self):
         """Close database connection"""

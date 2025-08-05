@@ -56,7 +56,7 @@ A Python command-line weather application that provides weather information for 
 ## Supported Cities
 
 The app supports 25+ major cities in Gujarat including:
-Ahmedabad, Surat, Vadodara, Rajkot, Bhavnagar, Jamnagar, Junagadh, Gandhinagar, and many more.
+Ahmedabad, Surat, Vadodara, Rajkot, Bhavnagar, Jamnagar, Junagadh, Gandhinagar, Anand, Navsari, Morbi, Mahesana, Bharuch, Vapi, Veraval, Godhra, Patan, Porbandar, Palanpur, Valsad, Nadiad, Surendranagar, Bhuj, Gandhidham, Ankleshwar
 
 ## Project Structure
 

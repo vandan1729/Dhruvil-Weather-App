@@ -1,5 +1,5 @@
 requests==2.31.0
-pymysql
-cryptography
+pymysql==1.1.1
+cryptography==45.0.5
 python-dotenv==1.0.0
-Flask
+Flask==3.1.1
